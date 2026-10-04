@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import pl.exceptionhandled.bookingapi.user.Role;
 import pl.exceptionhandled.bookingapi.user.User;
 
 import java.util.Collection;
@@ -31,5 +32,13 @@ public class AppUserDetails implements UserDetails {
     @Override
     public String getUsername() {
         return user.getEmail();
+    }
+
+    public Long getId() {
+        return user.getId();
+    }
+
+    public Role getRole() {
+        return user.getRole();
     }
 }

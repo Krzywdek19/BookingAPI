@@ -2,10 +2,14 @@ package pl.exceptionhandled.bookingapi.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.exceptionhandled.bookingapi.common.exception.EmailIsAlreadyTakenException;
+import pl.exceptionhandled.bookingapi.security.dto.LoginRequest;
+import pl.exceptionhandled.bookingapi.security.dto.LoginResponse;
 import pl.exceptionhandled.bookingapi.security.dto.RegisterRequest;
 import pl.exceptionhandled.bookingapi.security.dto.RegisterResponse;
 import pl.exceptionhandled.bookingapi.user.Role;
@@ -19,6 +23,8 @@ import java.util.Locale;
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @Transactional
     public RegisterResponse registerUser(RegisterRequest request) {
@@ -51,4 +57,13 @@ public class AuthenticationService {
         return new RegisterResponse(savedUser.getId(), savedUser.getEmail());
     }
 
+    public LoginResponse login(LoginRequest request) {
+        var normalizedEmail = request.email().trim().toLowerCase(Locale.ROOT);
+
+        var authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(normalizedEmail, request.password())
+        );
+
+        return new LoginResponse(jwtService.generateToken(authentication));
+    }
 }
