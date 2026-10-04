@@ -8,6 +8,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import pl.exceptionhandled.bookingapi.user.Role;
+
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 public class SecurityConfig {
@@ -22,6 +25,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers(POST, "/api/events").hasRole(Role.ADMIN.name())
                         .anyRequest().authenticated()
                 )
 

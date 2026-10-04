@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthenticationController.class)
-public class AuthenticationControllerIntegrationTest {
+public class EventController {
     @Autowired
     MockMvc mockMvc;
 
