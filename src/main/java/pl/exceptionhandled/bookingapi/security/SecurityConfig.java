@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,7 +23,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 import java.util.Base64;
 
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 @Configuration
 public class SecurityConfig {
@@ -114,16 +116,42 @@ public class SecurityConfig {
                                 "/api/auth/register",
                                 "/api/auth/login"
                         ).permitAll()
-                        .requestMatchers(POST, "/api/events")
+                        .requestMatchers(POST, "/api/events", "/api/seats")
                         .hasRole(Role.ADMIN.name())
-                        .anyRequest().authenticated()
+                        .requestMatchers(PUT, "/api/events/**", "/api/seats/**")
+                        .hasRole(Role.ADMIN.name())
+                        .requestMatchers(DELETE, "/api/events/**", "/api/seats/**")
+                        .hasRole(Role.ADMIN.name())
+                        .requestMatchers(GET, "/api/events/**", "/api/seats/**", "/api/reservations/**")
+                        .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                        .requestMatchers(POST, "/api/reservations")
+                        .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                        .requestMatchers(DELETE, "/api/reservations/**")
+                        .hasAnyRole(Role.USER.name(), Role.ADMIN.name())
+                        .anyRequest().denyAll()
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint((request, response, exception) -> {
+                            response.setStatus(401);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\":\"Authentication is required\"}");
+                        })
+                        .accessDeniedHandler((request, response, exception) -> {
+                            response.setStatus(403);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\":\"Access denied\"}");
+                        })
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt ->
                                 jwt.jwtAuthenticationConverter(
                                         jwtAuthenticationConverter
                                 )
-                        )
+                        ).authenticationEntryPoint((request, response, exception) -> {
+                            response.setStatus(401);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\":\"Invalid or expired token\"}");
+                        })
                 );
 
         return http.build();

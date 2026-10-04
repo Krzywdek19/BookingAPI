@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.Instant;
 
 public record UpdateEventRequest(
-        @NotBlank String name,
-        @NotBlank String place,
+        @NotBlank @jakarta.validation.constraints.Size(max = 255) String name,
+        @NotBlank @jakarta.validation.constraints.Size(max = 255) String place,
         @NotNull Instant startsAt
 ) {
 }

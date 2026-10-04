@@ -2,6 +2,7 @@ package pl.exceptionhandled.bookingapi.seat;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.exceptionhandled.bookingapi.event.Event;
 import pl.exceptionhandled.bookingapi.event.EventNotFoundException;
 import pl.exceptionhandled.bookingapi.event.EventRepository;
@@ -16,6 +17,7 @@ public class SeatService {
     private final SeatRepository seatRepository;
     private final EventRepository eventRepository;
 
+    @Transactional
     public SeatResponse create(SeatRequest request) {
         Seat seat = Seat.builder()
                 .event(findEvent(request.eventId()))
@@ -26,25 +28,30 @@ public class SeatService {
         return toResponse(seatRepository.save(seat));
     }
 
+    @Transactional(readOnly = true)
     public SeatResponse get(Long id) {
         return toResponse(findById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<SeatResponse> getAll() {
         return seatRepository.findAll().stream().map(this::toResponse).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<SeatResponse> getAllByEvent(Long eventId) {
         findEvent(eventId);
         return seatRepository.findAllByEventId(eventId).stream().map(this::toResponse).toList();
     }
 
+    @Transactional
     public SeatResponse update(Long id, SeatRequest request) {
         Seat seat = findById(id);
         seat.update(findEvent(request.eventId()), request.seatColumn(), request.seatRow(), request.price());
         return toResponse(seatRepository.save(seat));
     }
 
+    @Transactional
     public void delete(Long id) {
         seatRepository.delete(findById(id));
     }

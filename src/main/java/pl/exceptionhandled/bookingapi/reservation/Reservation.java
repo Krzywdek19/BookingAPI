@@ -39,4 +39,8 @@ public class Reservation {
             updatable = false
     )
     private Instant createdAt;
+
+    void cancel() {
+        status = ReservationStatus.CANCELLED;
+    }
 }

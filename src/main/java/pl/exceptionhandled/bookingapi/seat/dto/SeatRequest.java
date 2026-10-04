@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 public record SeatRequest(
         @NotNull Long eventId,
-        @NotBlank String seatColumn,
+        @NotBlank @jakarta.validation.constraints.Size(max = 2) String seatColumn,
         @NotNull @Positive Integer seatRow,
         @NotNull @PositiveOrZero BigDecimal price
 ) {

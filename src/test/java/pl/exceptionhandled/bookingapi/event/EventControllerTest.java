@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import pl.exceptionhandled.bookingapi.event.dto.CreateEventRequest;
 import pl.exceptionhandled.bookingapi.event.dto.EventResponse;
 import pl.exceptionhandled.bookingapi.security.SecurityConfig;
+import pl.exceptionhandled.bookingapi.security.AppUserDetailsService;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.Instant;
@@ -31,6 +32,9 @@ public class EventControllerTest {
 
     @MockitoBean
     private EventService eventService;
+
+    @MockitoBean
+    private AppUserDetailsService userDetailsService;
 
     @Test
     void shouldReturn401ForAnonymousUser() throws Exception {

@@ -7,8 +7,10 @@ import java.time.Instant;
 
 public record CreateEventRequest(
         @NotBlank
+        @jakarta.validation.constraints.Size(max = 255)
         String name,
         @NotBlank
+        @jakarta.validation.constraints.Size(max = 255)
         String place,
         @NotNull
         Instant startsAt

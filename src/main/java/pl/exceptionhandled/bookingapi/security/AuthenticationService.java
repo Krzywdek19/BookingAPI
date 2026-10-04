@@ -32,7 +32,7 @@ public class AuthenticationService {
                 .trim()
                 .toLowerCase(Locale.ROOT);
 
-        if(userRepository.existsByEmail(normalizedEmail)){
+        if (userRepository.existsByEmail(normalizedEmail)) {
             throw new EmailIsAlreadyTakenException(normalizedEmail);
         }
 
