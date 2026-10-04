@@ -23,6 +23,10 @@ public class User {
     @Column(name = "password_hash", nullable = false, length = 1000)
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role;
+
     @Column(
             name = "created_at",
             nullable = false,

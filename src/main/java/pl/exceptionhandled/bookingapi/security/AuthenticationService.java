@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.exceptionhandled.bookingapi.common.exception.EmailIsAlreadyTakenException;
 import pl.exceptionhandled.bookingapi.security.dto.RegisterRequest;
 import pl.exceptionhandled.bookingapi.security.dto.RegisterResponse;
+import pl.exceptionhandled.bookingapi.user.Role;
 import pl.exceptionhandled.bookingapi.user.User;
 import pl.exceptionhandled.bookingapi.user.UserRepository;
 
@@ -34,6 +35,7 @@ public class AuthenticationService {
         var user = User.builder()
                 .email(normalizedEmail)
                 .passwordHash(hashedPassword)
+                .role(Role.USER)
                 .build();
 
         User savedUser;
