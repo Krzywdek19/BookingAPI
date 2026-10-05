@@ -59,6 +59,13 @@ public class GlobalExceptionHandler {
         return error(HttpStatus.FORBIDDEN, "Access denied");
     }
 
+    @ExceptionHandler(ReservationAccessDeniedException.class)
+    public ResponseEntity<ApiError> handleReservationAccessDenied(
+            ReservationAccessDeniedException exception
+    ) {
+        return error(HttpStatus.FORBIDDEN, "Access denied");
+    }
+
     private ResponseEntity<ApiError> error(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(new ApiError(message));
     }

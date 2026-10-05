@@ -30,8 +30,12 @@ public class ReservationService {
             Authentication authentication
     ) {
         User user = currentUser(authentication);
-        Seat seat = seatRepository.findById(seatId)
+        Seat seat = seatRepository.findByIdWithLock(seatId)
                 .orElseThrow(() -> new SeatNotFoundException(seatId));
+
+        if(reservationRepository.existsBySeatIdAndStatusIn(seatId, List.of(ReservationStatus.PAID, ReservationStatus.PENDING))) {
+            throw new ReservationConflictException();
+        }
 
         Reservation reservation = Reservation.builder()
                 .user(user)
